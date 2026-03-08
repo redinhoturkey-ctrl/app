@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Sacs</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7b1e2b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:        #7a5a52;
+  --surface:   #b8a098;
+  --card:      #ffffff;
+  --border:    #e0cec8;
+  --accent:    #a8324a;
+  --accent2:   #c9894a;
+  --text:      #2b1616;
+  --muted:     #9a7878;
+  --overlap:   #ffefc8;
+  --overlap-t: #7a4400;
+  --month-bg:  #7b1e2b;
+  --row-alt:   #fdf7f5;
+  --red:       #7b1e2b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    min-height: 100vh;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(168,50,74,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 100%, rgba(100,50,30,0.15) 0%, transparent 55%);
+}
+
+/* ── PAGES ── */
+.page {
+    display: none;
+    padding: 44px 20px 32px;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: flex-start;
+}
+.page.active { display: flex; animation: fadeIn .25s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+/* ── APP TITLE ── */
+.app-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    color: var(--text);
+    letter-spacing: 0.02em;
+}
+.page-header span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+/* ── CARD ── */
+.container {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 28px 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 40px rgba(100,30,30,0.12), 0 2px 0 rgba(201,137,74,0.10) inset;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+/* ── LABELS ── */
+.field { text-align: center; }
+
+.label {
+    margin-bottom: 10px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: 0.02em;
+}
+
+/* ── BOXES ── */
+.box {
+    width: 100%;
+    height: 80px;
+    border-radius: 14px;
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+input.box {
+    background-color: #fdf0f0;
+    color: var(--accent);
+    border-color: var(--border);
+    outline: none;
+    caret-color: var(--accent);
+    font-family: 'DM Sans', sans-serif;
+}
+input.box:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(168,50,74,0.12);
+}
+
+#result {
+    background-color: #eef4fc;
+    color: #1a4a8a;
+    border-color: #b8cfe8;
+    letter-spacing: 0.05em;
+}
+
+.error {
+    background-color: #fdecea !important;
+    color: #c62828 !important;
+    border-color: #e57373 !important;
+}
+
+/* ── BUTTONS ── */
+.planning-btn {
+    width: 100%;
+    height: 60px;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid var(--accent);
+    background: linear-gradient(135deg, #8b1c2a 0%, #6a1522 100%);
+    color: #ffffff;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform .15s, box-shadow .15s, background .2s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+.planning-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.07), transparent);
+    pointer-events: none;
+}
+.planning-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px var(--accent);
+    background: linear-gradient(135deg, #a82234 0%, #7b1e2b 100%);
+}
+.planning-btn:active { transform: translateY(0); }
+
+/* ── DIVIDER ── */
+.divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+/* ── TABLE CONTAINER ── */
+.table-container {
+    max-height: 420px;
+    overflow-y: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+.table-container::-webkit-scrollbar { width: 5px; }
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 99px;
+}
+
+/* ── TABLE ── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+th, td {
+    padding: 11px 14px;
+    text-align: center;
+}
+
+thead th {
+    background-color: var(--red);
+    color: #ffffff;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+/* MOIS */
+.month-row td {
+    background: var(--month-bg);
+    color: #f5d0a0;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+tbody tr:not(.month-row) { color: var(--text); }
+tbody tr:nth-child(even):not(.month-row) { background-color: var(--row-alt); }
+tbody tr:not(.month-row):hover td {
+    background: rgba(168,50,74,0.05) !important;
+}
+
+/* ── RECHARGE OVERLAP ── */
+.recharge-overlap td {
+    background-color: var(--overlap) !important;
+    color: var(--overlap-t) !important;
+    font-weight: 600;
+}
+.recharge-overlap:hover td {
+    background: #fde8a0 !important;
+}
+
+/* ── LÉGENDE ── */
+.legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.82rem;
+    color: var(--overlap-t);
+    padding: 8px 12px;
+    background: var(--overlap);
+    border-radius: 10px;
+    border: 1px solid rgba(201,137,74,0.4);
+    text-align: left;
+}
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--accent2);
+    flex-shrink: 0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE PRINCIPALE -->
+<div class="page active" id="page-main">
+<div class="wrapper">
+<div class="container">
+
+<div class="field">
+    <div class="label">Code postal</div>
+    <input type="tel" id="postcode" class="box" inputmode="numeric" autocomplete="off" placeholder="_ _ _ _ _">
+</div>
+
+<div class="divider"></div>
+
+<div class="field">
+    <div class="label">Code sac</div>
+    <div id="result" class="box"></div>
+</div>
+
+<div class="divider"></div>
+
+<button class="planning-btn" onclick="showPage('planning')">📅 &nbsp;Planning</button>
+<button class="planning-btn" onclick="showPage('recharge')">⚡ &nbsp;</button>
+<button class="planning-btn" onclick="showPage('reverse')">🔍 &nbsp;Recherche inversée</button>
+
+</div>
+</div>
+</div>
+
+<!-- PAGE PLANNING (jours de repos) -->
+<div class="page" id="page-planning">
+<div class="wrapper">
+<div class="container">
+
+<div class="page-header">Planning<span>Jours de repos</span></div>
+
+<div class="table-container" id="planningTableContainer">
+<table>
+<tbody id="planningBody">
+</tbody>
+</table>
+</div>
+
+<button class="planning-btn" onclick="showPage('main')">← Retour</button>
+
+</div>
+</div>
+</div>
+
+<!-- PAGE RECHARGE (jours travaillés) -->
+<div class="page" id="page-recharge">
+<div class="wrapper">
+<div class="container">
+
+<div class="page-header">Recharge<span>Jours travaillés</span></div>
+
+<div class="legend">
+  <div class="legend-dot"></div>
+  <span>Recharge possible</span>
+</div>
+
+<div class="table-container" id="rechargeTableContainer">
+<table>
+<tbody id="rechargeBody">
+</tbody>
+</table>
+</div>
+
+<button class="planning-btn" onclick="showPage('main')">← Retour</button>
+
+</div>
+</div>
+</div>
+
+<!-- PAGE RECHERCHE INVERSE -->
+<div class="page" id="page-reverse">
+<div class="wrapper">
+<div class="container">
+
+<div class="field">
+    <div class="page-header">Recherche inversée<span>Code sac → Codes postaux</span></div>
+    <br>
+    <input type="text" id="sacInput" class="box" autocomplete="off" placeholder="Code sac">
+</div>
+
+<div class="table-container">
+<table id="reverseTable">
+<thead>
+<tr><th>Codes postaux</th></tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<button class="planning-btn" onclick="showPage('main')">← Retour</button>
+
+</div>
+</div>
+</div>
+
+<script>
+
+/* ====== DONNÉES ====== */
+
+// Repos de l'utilisateur (format YYYY-MM-DD)
+const mesRepos = [
+  "2026-01-05","2026-01-06","2026-01-10","2026-01-11","2026-01-16","2026-01-17",
+  "2026-01-22","2026-01-26","2026-01-31",
+  "2026-02-01","2026-02-06","2026-02-07","2026-02-11","2026-02-12","2026-02-17",
+  "2026-02-18","2026-02-23","2026-02-24","2026-02-28",
+  "2026-03-01","2026-03-06","2026-03-07","2026-03-12","2026-03-16","2026-03-21",
+  "2026-03-22","2026-03-27","2026-03-28",
+  "2026-04-01","2026-04-02","2026-04-07","2026-04-08","2026-04-13","2026-04-14",
+  "2026-04-18","2026-04-19","2026-04-24","2026-04-25","2026-04-30",
+  "2026-05-04","2026-05-09","2026-05-10","2026-05-15","2026-05-16","2026-05-20",
+  "2026-05-21","2026-05-26","2026-05-27",
+  "2026-06-01","2026-06-02","2026-06-06","2026-06-07","2026-06-12","2026-06-13",
+  "2026-06-18","2026-06-22","2026-06-27","2026-06-28",
+  "2026-07-03","2026-07-04","2026-07-08","2026-07-09","2026-07-14","2026-07-15",
+  "2026-07-20","2026-07-21","2026-07-25","2026-07-26","2026-07-31",
+  "2026-08-01","2026-08-06","2026-08-10","2026-08-15","2026-08-16","2026-08-21",
+  "2026-08-22","2026-08-26","2026-08-27",
+  "2026-09-01","2026-09-02","2026-09-07","2026-09-08","2026-09-12","2026-09-13",
+  "2026-09-18","2026-09-19","2026-09-24","2026-09-28",
+  "2026-10-03","2026-10-04","2026-10-09","2026-10-10","2026-10-14","2026-10-15",
+  "2026-10-20","2026-10-21","2026-10-26","2026-10-27","2026-10-31",
+  "2026-11-01","2026-11-06","2026-11-07","2026-11-12","2026-11-16","2026-11-21",
+  "2026-11-22","2026-11-27","2026-11-28",
+  "2026-12-02","2026-12-03","2026-12-08","2026-12-09","2026-12-14","2026-12-15",
+  "2026-12-19","2026-12-20","2026-12-25","2026-12-26","2026-12-31"
+];
+
+// Repos du collègue
+const reposCollegue = new Set([
+  "2026-01-05","2026-01-10","2026-01-11","2026-01-16","2026-01-17","2026-01-21",
+  "2026-01-22","2026-01-27","2026-01-28",
+  "2026-02-02","2026-02-03","2026-02-07","2026-02-08","2026-02-13","2026-02-14",
+  "2026-02-19","2026-02-23","2026-02-28",
+  "2026-03-01","2026-03-06","2026-03-07","2026-03-11","2026-03-12","2026-03-17",
+  "2026-03-18","2026-03-23","2026-03-24","2026-03-28","2026-03-29",
+  "2026-04-03","2026-04-04","2026-04-09","2026-04-13","2026-04-18","2026-04-19",
+  "2026-04-24","2026-04-25","2026-04-29","2026-04-30",
+  "2026-05-05","2026-05-06","2026-05-11","2026-05-12","2026-05-16","2026-05-17",
+  "2026-05-22","2026-05-23","2026-05-28",
+  "2026-06-01","2026-06-06","2026-06-07","2026-06-12","2026-06-13","2026-06-17",
+  "2026-06-18","2026-06-23","2026-06-24","2026-06-29","2026-06-30",
+  "2026-07-04","2026-07-05","2026-07-10","2026-07-11","2026-07-16","2026-07-20",
+  "2026-07-25","2026-07-26","2026-07-31",
+  "2026-08-01","2026-08-05","2026-08-06","2026-08-11","2026-08-12","2026-08-17",
+  "2026-08-18","2026-08-22","2026-08-23","2026-08-28","2026-08-29",
+  "2026-09-03","2026-09-07","2026-09-12","2026-09-13","2026-09-18","2026-09-19",
+  "2026-09-23","2026-09-24","2026-09-29","2026-09-30",
+  "2026-10-05","2026-10-06","2026-10-10","2026-10-11","2026-10-16","2026-10-17",
+  "2026-10-22","2026-10-26","2026-10-31",
+  "2026-11-01","2026-11-06","2026-11-07","2026-11-11","2026-11-12","2026-11-17",
+  "2026-11-18","2026-11-23","2026-11-24","2026-11-28","2026-11-29",
+  "2026-12-04","2026-12-05","2026-12-10","2026-12-14","2026-12-19","2026-12-20",
+  "2026-12-25","2026-12-26","2026-12-30","2026-12-31"
+]);
+
+const mesReposSet = new Set(mesRepos);
+
+/* ====== HELPERS ====== */
+
+function pad(n) { return String(n).padStart(2,'0'); }
+
+function toKey(date) {
+  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
+}
+
+function formatDateFr(dateStr) {
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const date = new Date(y, m-1, d);
+  const jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  const moisNoms = ['janvier','février','mars','avril','mai','juin','juillet',
+                    'août','septembre','octobre','novembre','décembre'];
+  return `${jours[date.getDay()]} ${d} ${moisNoms[m-1]} ${y}`;
+}
+
+function monthKey(dateStr) {
+  return dateStr.substring(0,7);
+}
+
+function monthLabel(dateStr) {
+  const [y,m] = dateStr.split('-').map(Number);
+  const moisNoms = ['JANVIER','FÉVRIER','MARS','AVRIL','MAI','JUIN','JUILLET',
+                    'AOÛT','SEPTEMBRE','OCTOBRE','NOVEMBRE','DÉCEMBRE'];
+  return `${moisNoms[m-1]} ${y}`;
+}
+
+/* ====== GÉNÉRATION DU PLANNING (repos) ====== */
+
+function buildPlanningTable() {
+  const tbody = document.getElementById('planningBody');
+  let currentMonth = '';
+  mesRepos.forEach(d => {
+    const mk = monthKey(d);
+    if (mk !== currentMonth) {
+      currentMonth = mk;
+      const tr = document.createElement('tr');
+      tr.className = 'month-row';
+      tr.innerHTML = `<td>${monthLabel(d)}</td>`;
+      tbody.appendChild(tr);
+    }
+    const tr = document.createElement('tr');
+    tr.dataset.date = d;
+    tr.innerHTML = `<td>${formatDateFr(d)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ====== GÉNÉRATION DE LA PAGE RECHARGE (jours travaillés) ====== */
+
+function buildRechargeTable() {
+  const tbody = document.getElementById('rechargeBody');
+  const start = new Date(2026, 0, 1);
+  const end   = new Date(2026, 11, 31);
+  let current = new Date(start);
+  let currentMonth = '';
+
+  while (current <= end) {
+    const key = toKey(current);
+    if (!mesReposSet.has(key)) {
+      const mk = monthKey(key);
+      if (mk !== currentMonth) {
+        currentMonth = mk;
+        const tr = document.createElement('tr');
+        tr.className = 'month-row';
+        tr.innerHTML = `<td>${monthLabel(key)}</td>`;
+        tbody.appendChild(tr);
+      }
+      const overlap = reposCollegue.has(key);
+      const tr = document.createElement('tr');
+      tr.dataset.date = key;
+      if (overlap) tr.className = 'recharge-overlap';
+      tr.innerHTML = `<td>${formatDateFr(key)}</td>`;
+      tbody.appendChild(tr);
+    }
+    current.setDate(current.getDate() + 1);
+  }
+}
+
+/* ====== AUTO-SCROLL vers aujourd'hui ====== */
+
+function scrollToToday(containerId, tbodyId) {
+  const container = document.getElementById(containerId);
+  const today = toKey(new Date());
+  const rows = document.querySelectorAll(`#${tbodyId} tr[data-date]`);
+
+  let targetRow = null;
+  for (const row of rows) {
+    if (row.dataset.date >= today) {
+      targetRow = row;
+      break;
+    }
+  }
+
+  if (targetRow) {
+    const rowTop = targetRow.offsetTop;
+    container.scrollTop = rowTop - container.offsetTop - 2;
+  }
+}
+
+/* ====== NAVIGATION ====== */
+
+function showPage(name) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page-" + name).classList.add("active");
+  window.scrollTo(0,0);
+
+  if (name === 'planning') {
+    setTimeout(() => scrollToToday('planningTableContainer', 'planningBody'), 50);
+  }
+  if (name === 'recharge') {
+    setTimeout(() => scrollToToday('rechargeTableContainer', 'rechargeBody'), 50);
+  }
+  if (name === 'main') {
+    // Refocus le champ code postal à chaque retour sur la page principale
+    setTimeout(() => focusPostcode(), 100);
+  }
+}
+
+/* ====== FOCUS CODE POSTAL ====== */
+
+function focusPostcode() {
+  const el = document.getElementById('postcode');
+  el.focus();
+  // Sur iOS, un simple focus ne suffit pas toujours : on simule un clic
+  el.click();
+}
+
+/* ====== INIT ====== */
+buildPlanningTable();
+buildRechargeTable();
+
+// Auto-focus au chargement de la page
+window.addEventListener('load', () => {
+  setTimeout(() => focusPostcode(), 300);
+});
+
+// Re-focus quand l'app revient au premier plan (PWA)
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    const mainPage = document.getElementById('page-main');
+    if (mainPage.classList.contains('active')) {
+      setTimeout(() => focusPostcode(), 300);
+    }
+  }
+});
+
+/* ====== TABLE CODE POSTAL ====== */
+const table = {
+"03000": "C0300",
+"03100": "C0310",
+"03313": "C0310",
+"03630": "C0310",
+"03101": "C0310",
+"03102": "C0310",
+"03103": "C0310",
+"03104": "C0310",
+"03107": "C0310",
+"03108": "C0310",
+"03109": "C0310",
+"03317": "C0310",
+"03105": "C0310",
+"03106": "C0310",
+"03120": "C0312",
+"03140": "C0314",
+"03330": "C0314",
+"03200": "C0320",
+"03700": "C0320",
+"03300": "C0320",
+"03260": "C0326",
+"03290": "C0329",
+"03230": "C0329",
+"03470": "C0329",
+"03302": "C032X",
+"03306": "C032X",
+"03201": "C032X",
+"03207": "C032X",
+"03208": "C032X",
+"03209": "C032X",
+"03340": "C0340",
+"03400": "C0340",
+"03380": "C0341",
+"03370": "C0341",
+"03017": "C034X",
+"03402": "C034X",
+"03003": "C034X",
+"03004": "C034X",
+"03008": "C034X",
+"03018": "C034X",
+"03006": "C034X",
+"03016": "C034X",
+"03403": "C034X",
+"03401": "C034X",
+"03500": "C0350",
+"03310": "C0360",
+"03600": "C0360",
+"03270": "C03CU",
+"03130": "C03CU",
+"03250": "C03CU",
+"03510": "C03CU",
+"03800": "C03CU",
+"03150": "C03CU",
+"03220": "C03CU",
+"03450": "C03CU",
+"03110": "C03CU",
+"03240": "C03MC",
+"03410": "C03MC",
+"03190": "C03MC",
+"03350": "C03MC",
+"03360": "C03MC",
+"03430": "C03MC",
+"03440": "C03MC",
+"03170": "C03MC",
+"03390": "C03MC",
+"03160": "C03YZ",
+"03210": "C03YZ",
+"03320": "C03YZ",
+"03460": "C03YZ",
+"15000": "C1500",
+"15004": "C1500",
+"15007": "C1500",
+"15013": "C1500",
+"15017": "C1500",
+"15001": "C1500",
+"15002": "C1500",
+"15003": "C1500",
+"15005": "C1500",
+"15006": "C1500",
+"15012": "C1500",
+"15008": "C1500",
+"15018": "C1500",
+"15101": "C1510",
+"15102": "C1510",
+"15103": "C1510",
+"15100": "C1510",
+"15320": "C1510",
+"15110": "C1511",
+"15120": "C1512",
+"15340": "C1512",
+"15130": "C1513",
+"15140": "C1514",
+"15150": "C1515",
+"15190": "C1519",
+"15200": "C1520",
+"15380": "C1520",
+"15350": "C1521",
+"15210": "C1521",
+"15240": "C1521",
+"15230": "C1523",
+"15430": "C1523",
+"15250": "C1525",
+"15310": "C1525",
+"15260": "C1526",
+"15270": "C1527",
+"15220": "C1529",
+"15290": "C1529",
+"15160": "C1530",
+"15170": "C1530",
+"15300": "C1530",
+"15400": "C1540",
+"15500": "C1550",
+"15590": "C1559",
+"15600": "C1560",
+"15700": "C1570",
+"15800": "C1580",
+"63063": "C6301",
+"63057": "C6301",
+"63001": "C6301",
+"63002": "C6301",
+"63003": "C6301",
+"63006": "C6301",
+"63007": "C6301",
+"63008": "C6301",
+"63010": "C6301",
+"63011": "C6301",
+"63012": "C6301",
+"63013": "C6301",
+"63030": "C6301",
+"63034": "C6301",
+"63035": "C6301",
+"63058": "C6301",
+"63064": "C6301",
+"63033": "C6301",
+"63037": "C6301",
+"63014": "C6302",
+"63020": "C6302",
+"63039": "C6302",
+"63019": "C6302",
+"63050": "C6302",
+"63051": "C6302",
+"63018": "C6302",
+"63021": "C6302",
+"63028": "C6302",
+"63100": "C6310",
+"63540": "C6311",
+"63110": "C6311",
+"63122": "C6311",
+"63150": "C6315",
+"63240": "C6315",
+"63950": "C6315",
+"63690": "C6315",
+"63170": "C6317",
+"63140": "C6320",
+"63200": "C6320",
+"63530": "C6320",
+"63202": "C6320",
+"63203": "C6320",
+"63201": "C6320",
+"63204": "C6320",
+"63230": "C6323",
+"63730": "C6327",
+"63960": "C6327",
+"63114": "C6327",
+"63270": "C6327",
+"63550": "C6330",
+"63920": "C6330",
+"63304": "C6330",
+"63306": "C6330",
+"63308": "C6330",
+"63250": "C6330",
+"63300": "C6330",
+"63650": "C6330",
+"63307": "C6330",
+"63390": "C6333",
+"63640": "C6333",
+"63330": "C6333",
+"63360": "C6336",
+"63118": "C6336",
+"63720": "C6336",
+"63112": "C6336",
+"63119": "C6336",
+"63510": "C6336",
+"63400": "C6340",
+"63830": "C6340",
+"63130": "C6340",
+"63402": "C6340",
+"63407": "C6340",
+"63870": "C6340",
+"63780": "C6341",
+"63770": "C6341",
+"63410": "C6341",
+"63370": "C6343",
+"63190": "C6343",
+"63430": "C6343",
+"63116": "C6343",
+"63910": "C6343",
+"63111": "C6343",
+"63115": "C6343",
+"63117": "C6343",
+"63450": "C6345",
+"63480": "C6348",
+"63880": "C6348",
+"63990": "C6348",
+"63500": "C6350",
+"63490": "C6350",
+"63501": "C6350",
+"63980": "C6357",
+"63580": "C6357",
+"63630": "C6357",
+"63570": "C6357",
+"63220": "C6360",
+"63600": "C6360",
+"63940": "C6360",
+"63890": "C6360",
+"63660": "C6360",
+"63840": "C6360",
+"63380": "C6362",
+"63620": "C6362",
+"63700": "C6370",
+"63560": "C6370",
+"63710": "C6371",
+"63970": "C6371",
+"63670": "C6380",
+"63800": "C6380",
+"63802": "C638X",
+"63178": "C638X",
+"63801": "C638X",
+"63803": "C638X",
+"63804": "C638X",
+"63808": "C638X",
+"63340": "C63CO",
+"63850": "C63CO",
+"63420": "C63CO",
+"63760": "C63CO",
+"63210": "C63CO",
+"63320": "C63CO",
+"63680": "C63CO",
+"63740": "C63CO",
+"63750": "C63CO",
+"63820": "C63CO",
+"63470": "C63CO",
+"63113": "C63CO",
+"63610": "C63CO",
+"63810": "C63CO",
+"63000": "C63OO",
+"63120": "C63PC",
+"63310": "C63PC",
+"63160": "C63PC",
+"63590": "C63PC",
+"63520": "C63PC",
+"63350": "C63PC",
+"63290": "C63PC",
+"63930": "C63PC",
+"63260": "C63PI",
+"63440": "C63PI",
+"63460": "C63PI",
+"63401": "C63PI",
+"63408": "C63PI",
+"63969": "C7009",
+"63031": "C7009",
+"63040": "C7009",
+"63966": "C7009",
+"63045": "C7009",
+"43000": "I4300",
+"43002": "I4301",
+"43001": "I4301",
+"43003": "I4301",
+"43011": "I4301",
+"43009": "I4301",
+"43100": "I4310",
+"43101": "I4310",
+"43102": "I4310",
+"43103": "I4310",
+"43440": "I4310",
+"43120": "I4312",
+"43210": "I4312",
+"43160": "I4316",
+"43170": "I4317",
+"43580": "I4317",
+"43190": "I4319",
+"43520": "I4319",
+"43130": "I4320",
+"43200": "I4320",
+"43201": "I4320",
+"43220": "I4322",
+"43230": "I4323",
+"43300": "I4330",
+"43110": "I4333",
+"43340": "I4334",
+"43420": "I4334",
+"43490": "I4334",
+"43270": "I4335",
+"43320": "I4335",
+"43350": "I4335",
+"43250": "I4336",
+"43450": "I4336",
+"43360": "I4336",
+"43390": "I4336",
+"43410": "I4336",
+"43380": "I4338",
+"43430": "I4343",
+"43550": "I4343",
+"43500": "I4350",
+"43590": "I4312",
+"43600": "I4360",
+"43620": "I4360",
+"43750": "I4370",
+"43770": "I4370",
+"43700": "I4370",
+"43800": "I4380",
+"43810": "I4380",
+"43150": "I43RU",
+"43260": "I43RU",
+"43370": "I43RU",
+"43510": "I43RU",
+"19001": "M1900",
+"19460": "M1900",
+"19490": "M1900",
+"19000": "M1900",
+"19150": "M1900",
+"19330": "M1900",
+"19003": "M1900",
+"19004": "M1900",
+"19005": "M1900",
+"19007": "M1900",
+"19011": "M1900",
+"19015": "M1900",
+"19012": "M1900",
+"19101": "M1909",
+"19102": "M1909",
+"19103": "M1909",
+"19104": "M1909",
+"19107": "M1909",
+"19311": "M1909",
+"19316": "M1909",
+"19317": "M1909",
+"19312": "M1909",
+"19100": "M1910",
+"19120": "M1912",
+"19130": "M1913",
+"19160": "M1916",
+"19170": "M1917",
+"19190": "M1919",
+"19200": "M1920",
+"19202": "M1920",
+"19203": "M1920",
+"19204": "M1920",
+"19208": "M1920",
+"19290": "M1920",
+"19340": "M1920",
+"19220": "M1922",
+"19230": "M1923",
+"19240": "M1924",
+"19260": "M1926",
+"19470": "M1926",
+"19270": "M1927",
+"19250": "M1930",
+"19300": "M1930",
+"19550": "M1930",
+"19310": "M1931",
+"19320": "M1932",
+"19350": "M1935",
+"19360": "M1936",
+"19560": "M1936",
+"19370": "M1937",
+"19430": "M1940",
+"19400": "M1940",
+"19380": "M1940",
+"19500": "M1950",
+"19140": "M1951",
+"19410": "M1951",
+"19510": "M1951",
+"19600": "M1960",
+"19520": "M1960",
+"19450": "M1970",
+"19700": "M1970",
+"19390": "M1980",
+"19800": "M1980",
+"19210": "M19BR",
+"19110": "M19II",
+"23380": "M2300",
+"23000": "M2300",
+"23005": "M2301",
+"23001": "M2301",
+"23004": "M2301",
+"23006": "M2301",
+"23011": "M2301",
+"23020": "M2301",
+"23003": "M2301",
+"23110": "M2311",
+"23140": "M2314",
+"23130": "M2314",
+"23230": "M2314",
+"23150": "M2315",
+"23480": "M2315",
+"23170": "M2317",
+"23700": "M2370",
+"23200": "M2320",
+"23120": "M2320",
+"23350": "M2322",
+"23220": "M2322",
+"23360": "M2322",
+"23250": "M2325",
+"23100": "M2326",
+"23260": "M2326",
+"23420": "M2326",
+"23320": "M2332",
+"23400": "M2340",
+"23190": "M2350",
+"23500": "M2350",
+"23270": "M2360",
+"23600": "M2360",
+"23450": "M2380",
+"23800": "M2380",
+"3420": "C0342",
+"63017": "C6302",
+"23210": "P2330",
+"23160": "P2330",
+"23240": "P2330",
+"23290": "P2330",
+"23300": "P2330",
+"87160": "P2330",
+"23340": "P2334",
+"23430": "P2343",
+"23460": "P2346",
+"87000": "P8700",
+"87007": "P8701",
+"87009": "P8701",
+"87031": "P8701",
+"87060": "P8701",
+"87041": "P8701",
+"87067": "P8701",
+"87038": "P8701",
+"87036": "P8701",
+"87071": "P8701",
+"87001": "P8701",
+"87002": "P8701",
+"87003": "P8701",
+"87004": "P8701",
+"87005": "P8701",
+"87006": "P8701",
+"87011": "P8701",
+"87012": "P8701",
+"87015": "P8701",
+"87016": "P8701",
+"87017": "P8701",
+"87025": "P8701",
+"87040": "P8701",
+"87042": "P8701",
+"87046": "P8701",
+"87032": "P8701",
+"87039": "P8701",
+"87043": "P8701",
+"87050": "P8701",
+"87051": "P8701",
+"87054": "P8701",
+"87062": "P8701",
+"87065": "P8701",
+"87052": "P8701",
+"87053": "P8701",
+"87068": "P8701",
+"87069": "P8701",
+"87033": "P8709",
+"87070": "P8709",
+"87020": "P8709",
+"87021": "P8709",
+"87022": "P8709",
+"87100": "P8710",
+"87130": "P8713",
+"87470": "P8713",
+"87120": "P8713",
+"87460": "P8713",
+"87230": "P8715",
+"87310": "P8715",
+"87440": "P8715",
+"87620": "P8715",
+"87150": "P8715",
+"87600": "P8715",
+"87170": "P8717",
+"87920": "P8717",
+"87200": "P8720",
+"87720": "P8720",
+"87201": "P8720",
+"87202": "P8720",
+"87203": "P8720",
+"87205": "P8720",
+"87220": "P8722",
+"87110": "P8722",
+"87222": "P8722",
+"87240": "P8724",
+"87290": "P8725",
+"87250": "P8730",
+"87270": "P8727",
+"87410": "P8727",
+"87480": "P8727",
+"87570": "P8727",
+"87280": "P8728",
+"87210": "P8730",
+"87300": "P8730",
+"87320": "P8730",
+"87330": "P8730",
+"87350": "P8735",
+"87590": "P8735",
+"87400": "P8740",
+"87430": "P8743",
+"87500": "P8750",
+"87420": "P8752",
+"87520": "P8752",
+"87700": "P8770",
+"87800": "P8780",
+"87140": "P87CT",
+"87190": "P87CT",
+"87380": "P87CT",
+"87510": "P87CT",
+"87340": "P87CT",
+"87370": "P87CT",
+"87890": "P87CT",
+"87260": "P87CT",
+"87360": "P87CT",
+"87640": "P87CT",
+};
+
+/* ====== CODE POSTAL → SAC ====== */
+const input = document.getElementById("postcode");
+const result = document.getElementById("result");
+
+input.addEventListener("input", () => {
+    // Garder uniquement les chiffres
+    let digits = input.value.replace(/\D/g, "");
+
+    // Si on dépasse 5 chiffres, on garde uniquement le dernier saisi
+    if (digits.length > 5) {
+        digits = digits.slice(-1);
+    }
+
+    input.value = digits;
+
+    if (digits.length < 5) {
+        result.textContent = "";
+        result.className = "box";
+        return;
+    }
+
+    if (table[digits]) {
+        result.textContent = table[digits];
+        result.className = "box";
+    } else {
+        result.textContent = "Non trouvé";
+        result.className = "box error";
+    }
+});
+
+/* ====== SAC → CODES POSTAUX ====== */
+const sacInput = document.getElementById("sacInput");
+const reverseBody = document.querySelector("#reverseTable tbody");
+
+sacInput.addEventListener("input", () => {
+    sacInput.value = sacInput.value.toUpperCase();
+    if (sacInput.value.length > 5) {
+        sacInput.value = sacInput.value.slice(-1);
+    }
+    const value = sacInput.value.trim();
+    reverseBody.innerHTML = "";
+    if (!value) return;
+    const results = Object.keys(table)
+        .filter(cp => table[cp] === value)
+        .sort();
+    if (!results.length) {
+        reverseBody.innerHTML = "<tr><td>Aucun résultat</td></tr>";
+        return;
+    }
+    results.forEach(cp => {
+        reverseBody.innerHTML += `<tr><td>${cp}</td></tr>`;
+    });
+});
+
+/* ====== SERVICE WORKER ====== */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service_worker.js')
+      .catch(err => console.log('SW non enregistré :', err));
+  });
+}
+</script>
+
+</body>
+</html>
