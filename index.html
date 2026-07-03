@@ -550,7 +550,7 @@ input[type="date"].box {
   <div class="table-container" id="histTableContainer">
   <table>
   <thead>
-  <tr><th>Semaine</th><th>Période</th></tr>
+  <tr><th>Semaine</th><th>Période</th><th></th></tr>
   </thead>
   <tbody id="histBody"></tbody>
   </table>
@@ -622,7 +622,7 @@ input[type="date"].box {
   <div class="table-container" id="sixHistTableContainer">
   <table>
   <thead>
-  <tr><th>Date</th><th>Salarié</th></tr>
+  <tr><th>Date</th><th>Salarié</th><th></th></tr>
   </thead>
   <tbody id="sixHistBody"></tbody>
   </table>
@@ -1014,7 +1014,7 @@ function afficherHistorique() {
 
   const tbody = document.getElementById('histBody');
   if (!records.length) {
-    tbody.innerHTML = '<tr><td colspan="2" class="empty-msg">Aucun service trouvé</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3" class="empty-msg">Aucun service trouvé</td></tr>';
     return;
   }
 
@@ -1023,8 +1023,16 @@ function afficherHistorique() {
     const [ey, em, ed] = r.dateEnd.split('-');
     const periode = `${sd}/${sm} → ${ed}/${em}/${ey}`;
     const label = nameFilter ? `Semaine ${r.week}` : `S${r.week} — ${r.name}`;
-    return `<tr><td>${label}</td><td>${periode}</td></tr>`;
+    return `<tr><td>${label}</td><td>${periode}</td><td><button class="del-btn" onclick="supprimerService(${r.id})">✕</button></td></tr>`;
   }).join('');
+}
+
+/* ── Suppression d'un service (fausse manip) ── */
+function supprimerService(id) {
+  if (!confirm('Supprimer ce service de l\'historique ?')) return;
+  const records = getRecords().filter(r => r.id !== id);
+  saveRecords(records);
+  afficherHistorique();
 }
 
 document.getElementById('saisieDate').addEventListener('change', updateSaisieWeekInfo);
@@ -1107,14 +1115,22 @@ function afficherSixHistorique() {
 
   const tbody = document.getElementById('sixHistBody');
   if (!records.length) {
-    tbody.innerHTML = '<tr><td colspan="2" class="empty-msg">Aucun service trouvé</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3" class="empty-msg">Aucun service trouvé</td></tr>';
     return;
   }
 
   tbody.innerHTML = records.map(r => {
     const [y, m, d] = r.date.split('-');
-    return `<tr><td>${d}/${m}/${y}</td><td>${r.name}</td></tr>`;
+    return `<tr><td>${d}/${m}/${y}</td><td>${r.name}</td><td><button class="del-btn" onclick="supprimerSixService(${r.id})">✕</button></td></tr>`;
   }).join('');
+}
+
+/* ── Suppression d'un service (fausse manip) ── */
+function supprimerSixService(id) {
+  if (!confirm('Supprimer ce service de l\'historique ?')) return;
+  const records = getSixRecords().filter(r => r.id !== id);
+  saveSixRecords(records);
+  afficherSixHistorique();
 }
 
 /* ====== INIT ====== */
