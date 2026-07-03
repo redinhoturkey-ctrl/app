@@ -250,16 +250,6 @@ tbody tr:not(.month-row):hover td {
     background: rgba(168,50,74,0.05) !important;
 }
 
-/* ── RECHARGE OVERLAP ── */
-.recharge-overlap td {
-    background-color: var(--overlap) !important;
-    color: var(--overlap-t) !important;
-    font-weight: 600;
-}
-.recharge-overlap:hover td {
-    background: #fde8a0 !important;
-}
-
 /* ── LÉGENDE ── */
 .legend {
     display: flex;
@@ -279,6 +269,151 @@ tbody tr:not(.month-row):hover td {
     border-radius: 3px;
     background: var(--accent2);
     flex-shrink: 0;
+}
+
+/* ── TV/FEMINA : SOUS-NAVIGATION ── */
+.tab-nav {
+    display: flex;
+    gap: 8px;
+}
+.tab-btn {
+    flex: 1;
+    padding: 10px 6px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--row-alt);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+}
+.tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+.tab-panel { display: none; flex-direction: column; gap: 18px; text-align: left; }
+.tab-panel.active { display: flex; }
+
+/* ── SELECT ── */
+select.box {
+    background-color: #fdf0f0;
+    color: var(--accent);
+    border-color: var(--border);
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0 12px;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a8324a'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 20px;
+}
+select.box:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(168,50,74,0.12);
+}
+
+input[type="date"].box {
+    background-color: #fdf0f0;
+    color: var(--accent);
+    border-color: var(--border);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.1rem;
+    padding: 0 12px;
+}
+
+/* ── INFO BANNER (semaine sélectionnée) ── */
+.week-info {
+    text-align: left;
+}
+.week-info .num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--overlap-t);
+}
+.week-info .range {
+    font-size: 0.82rem;
+    color: var(--overlap-t);
+    opacity: 0.85;
+    margin-top: 2px;
+}
+
+/* ── LISTE SALARIÉS ── */
+.employee-list { display: flex; flex-direction: column; gap: 8px; }
+.employee-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--row-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.92rem;
+    color: var(--text);
+    font-weight: 500;
+}
+.employee-row .del-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 1.1rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 4px;
+}
+.empty-msg {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    padding: 14px;
+}
+
+/* ── HISTORIQUE ── */
+.hist-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--overlap);
+    border: 1px solid rgba(201,137,74,0.4);
+    border-radius: 10px;
+}
+.hist-total .count {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--overlap-t);
+}
+.hist-total .lbl {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--overlap-t);
+}
+.date-range-row {
+    display: flex;
+    gap: 10px;
+}
+.date-range-row .field { flex: 1; }
+.date-range-row .box { height: 56px; font-size: 0.95rem; }
+
+/* ── MSG VALIDATION ── */
+.confirm-msg {
+    text-align: center;
+    padding: 12px;
+    border-radius: 10px;
+    background: #eef4fc;
+    color: #1a4a8a;
+    border: 1px solid #b8cfe8;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 </style>
 </head>
@@ -305,7 +440,8 @@ tbody tr:not(.month-row):hover td {
 <div class="divider"></div>
 
 <button class="planning-btn" onclick="showPage('planning')">📅 &nbsp;Planning</button>
-<button class="planning-btn" onclick="showPage('recharge')">⚡ &nbsp;</button>
+<button class="planning-btn" onclick="showPage('tvfemina')">🎬 &nbsp;TV / FEMINA</button>
+<button class="planning-btn" onclick="showPage('sixeme')">🎥 &nbsp;6EME SERVICE</button>
 <button class="planning-btn" onclick="showPage('reverse')">🔍 &nbsp;Recherche inversée</button>
 
 </div>
@@ -332,23 +468,166 @@ tbody tr:not(.month-row):hover td {
 </div>
 </div>
 
-<!-- PAGE RECHARGE (jours travaillés) -->
-<div class="page" id="page-recharge">
+<!-- PAGE TV/FEMINA (suivi du service supplémentaire) -->
+<div class="page" id="page-tvfemina">
 <div class="wrapper">
 <div class="container">
 
-<div class="page-header">Recharge<span>Jours travaillés</span></div>
+<div class="page-header">TV / FEMINA<span>Service supplémentaire</span></div>
 
-<div class="legend">
-  <div class="legend-dot"></div>
-  <span>Recharge possible</span>
+<div class="tab-nav">
+  <button class="tab-btn active" id="tabbtn-saisie" onclick="switchTvTab('saisie')">Saisie</button>
+  <button class="tab-btn" id="tabbtn-salaries" onclick="switchTvTab('salaries')">Salariés</button>
+  <button class="tab-btn" id="tabbtn-historique" onclick="switchTvTab('historique')">Historique</button>
 </div>
 
-<div class="table-container" id="rechargeTableContainer">
-<table>
-<tbody id="rechargeBody">
-</tbody>
-</table>
+<!-- SOUS-ONGLET : SAISIE -->
+<div class="tab-panel active" id="tab-saisie">
+
+  <div class="field">
+    <div class="label">Salarié</div>
+    <select id="saisieSalarie" class="box"></select>
+  </div>
+
+  <div class="field">
+    <div class="label">Date du service</div>
+    <input type="date" id="saisieDate" class="box">
+  </div>
+
+  <div class="legend week-info" id="saisieWeekInfo">
+    <div>
+      <div class="num" id="saisieWeekNum">—</div>
+      <div class="range" id="saisieWeekRange"></div>
+    </div>
+  </div>
+
+  <button class="planning-btn" onclick="validerSaisie()">✓ &nbsp;Valider</button>
+
+  <div id="saisieConfirm"></div>
+
+</div>
+
+<!-- SOUS-ONGLET : SALARIÉS -->
+<div class="tab-panel" id="tab-salaries">
+
+  <div class="field">
+    <div class="label">Nouveau salarié</div>
+    <input type="text" id="newEmployeeName" class="box" style="font-size:1.1rem; height:56px;" autocomplete="off" placeholder="Nom du salarié">
+  </div>
+
+  <button class="planning-btn" onclick="ajouterSalarie()">+ &nbsp;Ajouter</button>
+
+  <div class="divider"></div>
+
+  <div class="employee-list" id="employeeList"></div>
+
+</div>
+
+<!-- SOUS-ONGLET : HISTORIQUE -->
+<div class="tab-panel" id="tab-historique">
+
+  <div class="field">
+    <div class="label">Salarié</div>
+    <select id="histSalarie" class="box" onchange="afficherHistorique()"></select>
+  </div>
+
+  <div class="date-range-row">
+    <div class="field">
+      <div class="label" style="font-size:1rem;">Du</div>
+      <input type="date" id="histDateDebut" class="box" onchange="afficherHistorique()">
+    </div>
+    <div class="field">
+      <div class="label" style="font-size:1rem;">Au</div>
+      <input type="date" id="histDateFin" class="box" onchange="afficherHistorique()">
+    </div>
+  </div>
+
+  <div class="hist-total">
+    <span class="lbl">Services effectués</span>
+    <span class="count" id="histCount">0</span>
+  </div>
+
+  <div class="table-container" id="histTableContainer">
+  <table>
+  <thead>
+  <tr><th>Semaine</th><th>Période</th></tr>
+  </thead>
+  <tbody id="histBody"></tbody>
+  </table>
+  </div>
+
+</div>
+
+<button class="planning-btn" onclick="showPage('main')">← Retour</button>
+
+</div>
+</div>
+</div>
+
+<!-- PAGE 6EME SERVICE (suivi du service supplémentaire) -->
+<div class="page" id="page-sixeme">
+<div class="wrapper">
+<div class="container">
+
+<div class="page-header">6<sup>e</sup> Service<span>Service supplémentaire</span></div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" id="tabbtn-6-saisie" onclick="switchSixTab('saisie')">Saisie</button>
+  <button class="tab-btn" id="tabbtn-6-historique" onclick="switchSixTab('historique')">Historique</button>
+</div>
+
+<!-- SOUS-ONGLET : SAISIE -->
+<div class="tab-panel active" id="tab-6-saisie">
+
+  <div class="field">
+    <div class="label">Salarié</div>
+    <select id="sixSaisieSalarie" class="box"></select>
+  </div>
+
+  <div class="field">
+    <div class="label">Date du service</div>
+    <input type="date" id="sixSaisieDate" class="box">
+  </div>
+
+  <button class="planning-btn" onclick="validerSixSaisie()">✓ &nbsp;Valider</button>
+
+  <div id="sixSaisieConfirm"></div>
+
+</div>
+
+<!-- SOUS-ONGLET : HISTORIQUE -->
+<div class="tab-panel" id="tab-6-historique">
+
+  <div class="field">
+    <div class="label">Salarié</div>
+    <select id="sixHistSalarie" class="box" onchange="afficherSixHistorique()"></select>
+  </div>
+
+  <div class="date-range-row">
+    <div class="field">
+      <div class="label" style="font-size:1rem;">Du</div>
+      <input type="date" id="sixHistDateDebut" class="box" onchange="afficherSixHistorique()">
+    </div>
+    <div class="field">
+      <div class="label" style="font-size:1rem;">Au</div>
+      <input type="date" id="sixHistDateFin" class="box" onchange="afficherSixHistorique()">
+    </div>
+  </div>
+
+  <div class="hist-total">
+    <span class="lbl">Services effectués</span>
+    <span class="count" id="sixHistCount">0</span>
+  </div>
+
+  <div class="table-container" id="sixHistTableContainer">
+  <table>
+  <thead>
+  <tr><th>Date</th><th>Salarié</th></tr>
+  </thead>
+  <tbody id="sixHistBody"></tbody>
+  </table>
+  </div>
+
 </div>
 
 <button class="planning-btn" onclick="showPage('main')">← Retour</button>
@@ -415,34 +694,6 @@ const mesRepos = [
   "2026-12-19","2026-12-20","2026-12-25","2026-12-26","2026-12-31"
 ];
 
-// Repos du collègue
-const reposCollegue = new Set([
-  "2026-01-05","2026-01-10","2026-01-11","2026-01-16","2026-01-17","2026-01-21",
-  "2026-01-22","2026-01-27","2026-01-28",
-  "2026-02-02","2026-02-03","2026-02-07","2026-02-08","2026-02-13","2026-02-14",
-  "2026-02-19","2026-02-23","2026-02-28",
-  "2026-03-01","2026-03-06","2026-03-07","2026-03-11","2026-03-12","2026-03-17",
-  "2026-03-18","2026-03-23","2026-03-24","2026-03-28","2026-03-29",
-  "2026-04-03","2026-04-04","2026-04-09","2026-04-13","2026-04-18","2026-04-19",
-  "2026-04-24","2026-04-25","2026-04-29","2026-04-30",
-  "2026-05-05","2026-05-06","2026-05-11","2026-05-12","2026-05-16","2026-05-17",
-  "2026-05-22","2026-05-23","2026-05-28",
-  "2026-06-01","2026-06-06","2026-06-07","2026-06-12","2026-06-13","2026-06-17",
-  "2026-06-18","2026-06-23","2026-06-24","2026-06-29","2026-06-30",
-  "2026-07-04","2026-07-05","2026-07-10","2026-07-11","2026-07-16","2026-07-20",
-  "2026-07-25","2026-07-26","2026-07-31",
-  "2026-08-01","2026-08-05","2026-08-06","2026-08-11","2026-08-12","2026-08-17",
-  "2026-08-18","2026-08-22","2026-08-23","2026-08-28","2026-08-29",
-  "2026-09-03","2026-09-07","2026-09-12","2026-09-13","2026-09-18","2026-09-19",
-  "2026-09-23","2026-09-24","2026-09-29","2026-09-30",
-  "2026-10-05","2026-10-06","2026-10-10","2026-10-11","2026-10-16","2026-10-17",
-  "2026-10-22","2026-10-26","2026-10-31",
-  "2026-11-01","2026-11-06","2026-11-07","2026-11-11","2026-11-12","2026-11-17",
-  "2026-11-18","2026-11-23","2026-11-24","2026-11-28","2026-11-29",
-  "2026-12-04","2026-12-05","2026-12-10","2026-12-14","2026-12-19","2026-12-20",
-  "2026-12-25","2026-12-26","2026-12-30","2026-12-31"
-]);
-
 const mesReposSet = new Set(mesRepos);
 
 /* ====== HELPERS ====== */
@@ -494,37 +745,6 @@ function buildPlanningTable() {
   });
 }
 
-/* ====== GÉNÉRATION DE LA PAGE RECHARGE (jours travaillés) ====== */
-
-function buildRechargeTable() {
-  const tbody = document.getElementById('rechargeBody');
-  const start = new Date(2026, 0, 1);
-  const end   = new Date(2026, 11, 31);
-  let current = new Date(start);
-  let currentMonth = '';
-
-  while (current <= end) {
-    const key = toKey(current);
-    if (!mesReposSet.has(key)) {
-      const mk = monthKey(key);
-      if (mk !== currentMonth) {
-        currentMonth = mk;
-        const tr = document.createElement('tr');
-        tr.className = 'month-row';
-        tr.innerHTML = `<td>${monthLabel(key)}</td>`;
-        tbody.appendChild(tr);
-      }
-      const overlap = reposCollegue.has(key);
-      const tr = document.createElement('tr');
-      tr.dataset.date = key;
-      if (overlap) tr.className = 'recharge-overlap';
-      tr.innerHTML = `<td>${formatDateFr(key)}</td>`;
-      tbody.appendChild(tr);
-    }
-    current.setDate(current.getDate() + 1);
-  }
-}
-
 /* ====== AUTO-SCROLL vers aujourd'hui ====== */
 
 function scrollToToday(containerId, tbodyId) {
@@ -556,8 +776,14 @@ function showPage(name) {
   if (name === 'planning') {
     setTimeout(() => scrollToToday('planningTableContainer', 'planningBody'), 50);
   }
-  if (name === 'recharge') {
-    setTimeout(() => scrollToToday('rechargeTableContainer', 'rechargeBody'), 50);
+  if (name === 'tvfemina') {
+    refreshEmployeeSelects();
+    renderEmployeeList();
+    afficherHistorique();
+  }
+  if (name === 'sixeme') {
+    refreshEmployeeSelects();
+    afficherSixHistorique();
   }
   if (name === 'main') {
     // Refocus le champ code postal à chaque retour sur la page principale
@@ -574,9 +800,342 @@ function focusPostcode() {
   el.click();
 }
 
+/* ====== TV / FEMINA : SUIVI DU SERVICE SUPPLÉMENTAIRE ====== */
+
+const TV_EMPLOYEES_KEY = 'tvfemina_employees';
+const TV_RECORDS_KEY   = 'tvfemina_records';
+
+function getEmployees() {
+  try {
+    return JSON.parse(localStorage.getItem(TV_EMPLOYEES_KEY)) || [];
+  } catch (e) { return []; }
+}
+function saveEmployees(list) {
+  localStorage.setItem(TV_EMPLOYEES_KEY, JSON.stringify(list));
+}
+function getRecords() {
+  try {
+    return JSON.parse(localStorage.getItem(TV_RECORDS_KEY)) || [];
+  } catch (e) { return []; }
+}
+function saveRecords(list) {
+  localStorage.setItem(TV_RECORDS_KEY, JSON.stringify(list));
+}
+
+/* ── Sous-navigation (onglets) ── */
+function switchTvTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tabbtn-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+
+  if (tab === 'salaries') renderEmployeeList();
+  if (tab === 'historique') { refreshEmployeeSelects(); afficherHistorique(); }
+  if (tab === 'saisie') { refreshEmployeeSelects(); updateSaisieWeekInfo(); }
+}
+
+/* ── Gestion des salariés ── */
+function ajouterSalarie() {
+  const input = document.getElementById('newEmployeeName');
+  const name = input.value.trim();
+  if (!name) return;
+
+  const list = getEmployees();
+  if (list.some(n => n.toLowerCase() === name.toLowerCase())) {
+    input.value = '';
+    return;
+  }
+  list.push(name);
+  list.sort((a, b) => a.localeCompare(b, 'fr'));
+  saveEmployees(list);
+  input.value = '';
+  renderEmployeeList();
+  refreshEmployeeSelects();
+}
+
+function supprimerSalarie(name) {
+  if (!confirm(`Supprimer "${name}" de la base ? (L'historique de ses services sera conservé.)`)) return;
+  const list = getEmployees().filter(n => n !== name);
+  saveEmployees(list);
+  renderEmployeeList();
+  refreshEmployeeSelects();
+}
+
+function renderEmployeeList() {
+  const container = document.getElementById('employeeList');
+  const list = getEmployees();
+  if (!list.length) {
+    container.innerHTML = '<div class="empty-msg">Aucun salarié enregistré</div>';
+    return;
+  }
+  container.innerHTML = list.map(name => `
+    <div class="employee-row">
+      <span>${name}</span>
+      <button class="del-btn" onclick="supprimerSalarie('${name.replace(/'/g, "\\'")}')">✕</button>
+    </div>
+  `).join('');
+}
+
+function refreshEmployeeSelects() {
+  const list = getEmployees();
+  const options = '<option value="" disabled selected>Choisir…</option>' +
+    list.map(name => `<option value="${name}">${name}</option>`).join('');
+
+  const saisieSel = document.getElementById('saisieSalarie');
+  const prevSaisie = saisieSel.value;
+  saisieSel.innerHTML = options;
+  if (list.includes(prevSaisie)) saisieSel.value = prevSaisie;
+
+  const histSel = document.getElementById('histSalarie');
+  const prevHist = histSel.value;
+  histSel.innerHTML = '<option value="">Tous les salariés</option>' +
+    list.map(name => `<option value="${name}">${name}</option>`).join('');
+  if (prevHist && list.includes(prevHist)) histSel.value = prevHist;
+
+  const sixSaisieSel = document.getElementById('sixSaisieSalarie');
+  const prevSixSaisie = sixSaisieSel.value;
+  sixSaisieSel.innerHTML = options;
+  if (list.includes(prevSixSaisie)) sixSaisieSel.value = prevSixSaisie;
+
+  const sixHistSel = document.getElementById('sixHistSalarie');
+  const prevSixHist = sixHistSel.value;
+  sixHistSel.innerHTML = '<option value="">Tous les salariés</option>' +
+    list.map(name => `<option value="${name}">${name}</option>`).join('');
+  if (prevSixHist && list.includes(prevSixHist)) sixHistSel.value = prevSixHist;
+}
+
+/* ── Calcul semaine ISO (lundi → dimanche) ── */
+function getISOWeekNumber(date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  return { week: weekNo, year: d.getUTCFullYear() };
+}
+
+function getWeekRange(date) {
+  const d = new Date(date);
+  const day = d.getDay(); // 0 = dimanche
+  const diffToMonday = (day === 0) ? -6 : 1 - day;
+  const monday = new Date(d);
+  monday.setDate(d.getDate() + diffToMonday);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  return { monday, sunday };
+}
+
+function formatDateShort(date) {
+  return `${pad(date.getDate())}/${pad(date.getMonth()+1)}/${date.getFullYear()}`;
+}
+
+function parseDateInput(value) {
+  // value au format YYYY-MM-DD (input type=date)
+  const [y, m, d] = value.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function getFridayOfWeek(date) {
+  const { monday } = getWeekRange(date);
+  const friday = new Date(monday);
+  friday.setDate(monday.getDate() + 4);
+  return friday;
+}
+
+/* ── Saisie du service ── */
+function updateSaisieWeekInfo() {
+  const dateInput = document.getElementById('saisieDate');
+  if (!dateInput.value) return;
+  const date = parseDateInput(dateInput.value);
+  const { week, year } = getISOWeekNumber(date);
+  const { monday, sunday } = getWeekRange(date);
+  document.getElementById('saisieWeekNum').textContent = `Semaine ${week} — ${year}`;
+  document.getElementById('saisieWeekRange').textContent =
+    `Du ${formatDateShort(monday)} au ${formatDateShort(sunday)}`;
+}
+
+function validerSaisie() {
+  const salarieSel = document.getElementById('saisieSalarie');
+  const dateInput = document.getElementById('saisieDate');
+  const confirmDiv = document.getElementById('saisieConfirm');
+
+  const name = salarieSel.value;
+  if (!name) {
+    confirmDiv.innerHTML = '<div class="confirm-msg" style="background:#fdecea;color:#c62828;border-color:#e57373;">Sélectionnez un salarié</div>';
+    return;
+  }
+  if (!dateInput.value) {
+    confirmDiv.innerHTML = '<div class="confirm-msg" style="background:#fdecea;color:#c62828;border-color:#e57373;">Sélectionnez une date</div>';
+    return;
+  }
+
+  const date = parseDateInput(dateInput.value);
+  const { week, year } = getISOWeekNumber(date);
+  const { monday, sunday } = getWeekRange(date);
+
+  const records = getRecords();
+  records.push({
+    id: Date.now(),
+    name,
+    week,
+    year,
+    dateStart: toKey(monday),
+    dateEnd: toKey(sunday)
+  });
+  saveRecords(records);
+
+  confirmDiv.innerHTML = `<div class="confirm-msg">
+    ✓ ${name} — Semaine ${week} (${year})<br>
+    Du ${formatDateShort(monday)} au ${formatDateShort(sunday)}
+  </div>`;
+}
+
+/* ── Historique ── */
+function afficherHistorique() {
+  const nameFilter = document.getElementById('histSalarie').value;
+  const debutInput = document.getElementById('histDateDebut').value;
+  const finInput = document.getElementById('histDateFin').value;
+
+  let records = getRecords();
+
+  if (nameFilter) {
+    records = records.filter(r => r.name === nameFilter);
+  }
+  if (debutInput) {
+    records = records.filter(r => r.dateEnd >= debutInput);
+  }
+  if (finInput) {
+    records = records.filter(r => r.dateStart <= finInput);
+  }
+
+  records.sort((a, b) => a.dateStart.localeCompare(b.dateStart));
+
+  document.getElementById('histCount').textContent = records.length;
+
+  const tbody = document.getElementById('histBody');
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="2" class="empty-msg">Aucun service trouvé</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = records.map(r => {
+    const [sy, sm, sd] = r.dateStart.split('-');
+    const [ey, em, ed] = r.dateEnd.split('-');
+    const periode = `${sd}/${sm} → ${ed}/${em}/${ey}`;
+    const label = nameFilter ? `Semaine ${r.week}` : `S${r.week} — ${r.name}`;
+    return `<tr><td>${label}</td><td>${periode}</td></tr>`;
+  }).join('');
+}
+
+document.getElementById('saisieDate').addEventListener('change', updateSaisieWeekInfo);
+
+/* ====== 6EME SERVICE (suivi du service supplémentaire) ====== */
+/* Utilise la même base salariée que TV/FEMINA (getEmployees / saveEmployees) */
+
+const SIX_RECORDS_KEY = 'sixeme_records';
+
+function getSixRecords() {
+  try {
+    return JSON.parse(localStorage.getItem(SIX_RECORDS_KEY)) || [];
+  } catch (e) { return []; }
+}
+function saveSixRecords(list) {
+  localStorage.setItem(SIX_RECORDS_KEY, JSON.stringify(list));
+}
+
+/* ── Sous-navigation (onglets) ── */
+function switchSixTab(tab) {
+  document.querySelectorAll('#page-sixeme .tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#page-sixeme .tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tabbtn-6-' + tab).classList.add('active');
+  document.getElementById('tab-6-' + tab).classList.add('active');
+
+  if (tab === 'historique') { refreshEmployeeSelects(); afficherSixHistorique(); }
+  if (tab === 'saisie') { refreshEmployeeSelects(); }
+}
+
+/* ── Saisie du service ── */
+function validerSixSaisie() {
+  const salarieSel = document.getElementById('sixSaisieSalarie');
+  const dateInput = document.getElementById('sixSaisieDate');
+  const confirmDiv = document.getElementById('sixSaisieConfirm');
+
+  const name = salarieSel.value;
+  if (!name) {
+    confirmDiv.innerHTML = '<div class="confirm-msg" style="background:#fdecea;color:#c62828;border-color:#e57373;">Sélectionnez un salarié</div>';
+    return;
+  }
+  if (!dateInput.value) {
+    confirmDiv.innerHTML = '<div class="confirm-msg" style="background:#fdecea;color:#c62828;border-color:#e57373;">Sélectionnez une date</div>';
+    return;
+  }
+
+  const records = getSixRecords();
+  records.push({
+    id: Date.now(),
+    name,
+    date: dateInput.value
+  });
+  saveSixRecords(records);
+
+  confirmDiv.innerHTML = `<div class="confirm-msg">
+    ✓ ${name} — ${formatDateFr(dateInput.value)}
+  </div>`;
+}
+
+/* ── Historique ── */
+function afficherSixHistorique() {
+  const nameFilter = document.getElementById('sixHistSalarie').value;
+  const debutInput = document.getElementById('sixHistDateDebut').value;
+  const finInput = document.getElementById('sixHistDateFin').value;
+
+  let records = getSixRecords();
+
+  if (nameFilter) {
+    records = records.filter(r => r.name === nameFilter);
+  }
+  if (debutInput) {
+    records = records.filter(r => r.date >= debutInput);
+  }
+  if (finInput) {
+    records = records.filter(r => r.date <= finInput);
+  }
+
+  records.sort((a, b) => a.date.localeCompare(b.date));
+
+  document.getElementById('sixHistCount').textContent = records.length;
+
+  const tbody = document.getElementById('sixHistBody');
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="2" class="empty-msg">Aucun service trouvé</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = records.map(r => {
+    const [y, m, d] = r.date.split('-');
+    return `<tr><td>${d}/${m}/${y}</td><td>${r.name}</td></tr>`;
+  }).join('');
+}
+
 /* ====== INIT ====== */
 buildPlanningTable();
-buildRechargeTable();
+
+// Initialiser la date de saisie sur le vendredi de la semaine en cours et calculer la semaine
+// (l'utilisateur peut ensuite la modifier librement)
+(function initSaisieDate() {
+  const dateInput = document.getElementById('saisieDate');
+  dateInput.value = toKey(getFridayOfWeek(new Date()));
+  updateSaisieWeekInfo();
+})();
+
+// Initialiser la date de saisie du 6EME SERVICE sur aujourd'hui
+(function initSixSaisieDate() {
+  const dateInput = document.getElementById('sixSaisieDate');
+  dateInput.value = toKey(new Date());
+})();
+
+refreshEmployeeSelects();
+renderEmployeeList();
 
 // Auto-focus au chargement de la page
 window.addEventListener('load', () => {
